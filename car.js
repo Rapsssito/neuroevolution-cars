@@ -1,6 +1,15 @@
 const N_WATCHERS = 6;
 
 class Car {
+    /**
+     * @param {number} size 
+     * @param {number} x 
+     * @param {number} y 
+     * @param {number} maxForce 
+     * @param {number} maxSpeed 
+     * @param {number} visionRadius 
+     * @param {NeuralNetwork} brain 
+     */
     constructor(size, x, y, maxForce, maxSpeed, visionRadius, brain) {
         this.size = size;
         this.originalX = x;
@@ -14,10 +23,13 @@ class Car {
         this.brain = brain === undefined ? new NeuralNetwork(2 + N_WATCHERS, 32, 3) : brain;
         this.score = 0;
         this.foods = [];
-        // DEBUG
-        this.normalLines = [];
+        this.visionLines = [];
     }
 
+    /**
+     * @param {Car} other 
+     * @returns {Car}
+     */
     crossover(other) {
         const newBrain = this.brain.crossover(other.brain);
         return new Car(
@@ -31,6 +43,9 @@ class Car {
         );
     }
 
+    /**
+     * @returns {Car}
+     */
     getChild() {
         return new Car(
             this.size,
@@ -43,10 +58,19 @@ class Car {
         );
     }
 
+    /**
+     * @param {number} otherX 
+     * @param {number} otherY 
+     * 
+     * @returns {number}
+     */
     distance(otherX, otherY) {
         return dist(this.position.x, this.position.y, otherX, otherY) - this.size / 2;
     }
 
+    /**
+     * @param {number} rate 
+     */
     mutate(rate) {
         this.brain.mutate(rate);
     }
@@ -55,25 +79,18 @@ class Car {
         this.brain.dispose();
     }
 
+    /**
+     * @param {Obstacle[]} obstacles 
+     */
     update(obstacles) {
         this.think(obstacles);
         this.move();
     }
 
-    seek() {
-        // DEBUG
-        const target = createVector(mouseX, mouseY);
-        const desired = target.sub(this.position); // A vector pointing from the position to the target
-        // Scale to maximum speed
-        desired.setMag(this.maxSpeed);
-        // Steering = Desired minus velocity
-        const steer = desired.sub(this.velocity);
-        steer.limit(this.maxForce); // Limit to maximum steering force
-        this.applyForce(steer);
-    }
-
+    /**
+     * @param {Obstacle[]} obstacles 
+     */
     think(obstacles) {
-        // this.seek();
         const watchers = this.watch(obstacles);
         const inputs = [];
         const normVelocity = this.velocity.copy().normalize();
@@ -84,10 +101,11 @@ class Car {
         const decision = output.argMax(1).dataSync()[0];
         switch (decision) {
             case 0:
+                // Move right
                 this.right();
                 break;
             case 1:
-                // this.right();
+                // Move left
                 this.left();
                 break;
             case 2:
@@ -98,9 +116,13 @@ class Car {
         }
     }
 
+    /**
+     * @param {Obstacle[]} obstacles 
+     * 
+     * @returns {number[]}
+     */
     watch(obstacles) {
-        // DEBUG
-        this.normalLines = [];
+        this.visionLines = [];
 
         const watchers = new Array(N_WATCHERS).fill(1);
         for (const b of obstacles) {
@@ -114,9 +136,7 @@ class Car {
                 watchers[watcherIndex],
                 map(distance, 0, this.visionRadius, -1, 1)
             );
-            // console.log(watchers);
-            // console.log((angle * 180) / PI);
-            this.normalLines.push(normalLine);
+            this.visionLines.push(normalLine);
         }
         return watchers;
     }
@@ -133,6 +153,9 @@ class Car {
         this.applyForce(newForce);
     }
 
+    /**
+     * @param {number} force
+     */
     applyForce(force) {
         // TODO: mass
         this.acceleration.add(force);
@@ -147,11 +170,11 @@ class Car {
 
     display(best) {
         if (best) stroke(255, 0, 0);
-        else stroke(0);        
+        else stroke(0);
         fill(255, 50);
         strokeWeight(5);
         ellipse(this.position.x, this.position.y, this.size, this.size);
-        stroke(0, 100);        
+        stroke(0, 100);
         strokeWeight(2);
         noFill();
         ellipse(this.position.x, this.position.y, this.visionRadius * 2);
@@ -163,7 +186,7 @@ class Car {
             this.position.y + this.velocity.y * 10
         );
         stroke(255, 0, 0, 100);
-        for (const normalLine of this.normalLines) {
+        for (const normalLine of this.visionLines) {
             line(
                 this.position.x,
                 this.position.y,

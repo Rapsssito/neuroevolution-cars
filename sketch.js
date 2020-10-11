@@ -88,8 +88,7 @@ function draw() {
         if (onlyDisplayBest && !bestCar.dead && car !== bestCar) return;
         car.display(car === bestCar);
     });
-    // Display spawn point    
-    ellipse(spawnPoint.x, spawnPoint.y, spawnPoint.size);
+    ellipse(spawnPoint.x, spawnPoint.y, spawnPoint.size); // Spawn point   
     obstacles.forEach((b) => b.display());
     bestCar.foods.forEach((f) => f.display());
     bestSpan.html('Best: ' + bestCar.score);
