@@ -55,8 +55,8 @@ class Car {
         this.brain.dispose();
     }
 
-    update(balls) {
-        this.think(balls);
+    update(obstacles) {
+        this.think(obstacles);
         this.move();
     }
 
@@ -72,9 +72,9 @@ class Car {
         this.applyForce(steer);
     }
 
-    think(balls) {
+    think(obstacles) {
         // this.seek();
-        const watchers = this.watch(balls);
+        const watchers = this.watch(obstacles);
         const inputs = [];
         const normVelocity = this.velocity.copy().normalize();
         inputs[0] = normVelocity.x;
@@ -98,12 +98,12 @@ class Car {
         }
     }
 
-    watch(balls) {
+    watch(obstacles) {
         // DEBUG
         this.normalLines = [];
 
         const watchers = new Array(N_WATCHERS).fill(1);
-        for (const b of balls) {
+        for (const b of obstacles) {
             const distance = this.distance(b.x, b.y) - b.size / 2;
             if (distance > this.visionRadius) continue;
             const normalLine = createVector(b.x - this.position.x, b.y - this.position.y);
