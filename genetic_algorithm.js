@@ -1,10 +1,15 @@
 class GeneticAlgorithm {
+    /**
+     * @param {Car[]} lastGeneration 
+     * 
+     * @returns {Car[]}
+     */
     static nextGeneration(lastGeneration) {
-        GeneticAlgorithm.calculateFitness(lastGeneration);
-        const fitnessSum = lastGeneration.reduce((prev, curr) => prev + curr.fitness, 0);
+        GeneticAlgorithm.calculateIndividualFitness(lastGeneration);
+        const totalFitness = lastGeneration.reduce((prev, curr) => prev + curr.fitness, 0);
         const newGeneration = lastGeneration.map(() => {
-            const parent1 = GeneticAlgorithm.pickOne(lastGeneration, fitnessSum);
-            const parent2 = GeneticAlgorithm.pickOne(lastGeneration, fitnessSum);
+            const parent1 = GeneticAlgorithm.pickOne(lastGeneration, totalFitness);
+            const parent2 = GeneticAlgorithm.pickOne(lastGeneration, totalFitness);
             const child = parent1.crossover(parent2);
             child.mutate(0.1);
             return child;
@@ -12,8 +17,14 @@ class GeneticAlgorithm {
         return newGeneration;
     }
 
-    static pickOne(lastGeneration, fitnessSum) {
-        const r = Math.random() * fitnessSum;
+    /**
+     * @param {Car[]} lastGeneration
+     * @param {number} totalFitness
+     * 
+     * @returns {Car}
+     */
+    static pickOne(lastGeneration, totalFitness) {
+        const r = Math.random() * totalFitness;
         let currentCount = 0;
         for (const parent of lastGeneration) {
             currentCount += parent.fitness;
@@ -24,7 +35,10 @@ class GeneticAlgorithm {
         throw new Error('PARENT NOT FOUND');
     }
 
-    static calculateFitness(lastGeneration) {
+    /**
+     * @param {Car[]} lastGeneration
+     */
+    static calculateIndividualFitness(lastGeneration) {
         for (const parent of lastGeneration) {
             parent.fitness = parent.score * parent.score;
         }
