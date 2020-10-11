@@ -1,5 +1,5 @@
-const TOTAL_POPULATION = 20;
-const TOTAL_FOOD = 30;
+const MAX_POPULATION = 20;
+const MAX_FOOD = 30;
 const OBSTACLE_RATIO = 0.12;
 const CAR_SIZE = 30;
 const BALL_SIZE = 50;
@@ -22,12 +22,13 @@ let foodHasBeenEaten = false;
 let bestSpan = null;
 let onlyDisplayBest = false;
 
+// Using CPU for optimization
 tf.setBackend('cpu');
 
 function setup() {
     createCanvas(WIDTH, HEIGHT);
     spawnPoint = new Ball(WIDTH / 2, HEIGHT / 2, BALL_SIZE * 2);
-    for (let i = 0; i < TOTAL_POPULATION; i++) {
+    for (let i = 0; i < MAX_POPULATION; i++) {
         const car = new Car(CAR_SIZE, WIDTH / 2, HEIGHT / 2, 0.5, 4, 120);
         cars.push(car);
     }
@@ -102,7 +103,7 @@ function mousePressed() {
 }
 
 function generateFood() {
-    for (let i = 0; i < TOTAL_FOOD; i++) {
+    for (let i = 0; i < MAX_FOOD; i++) {
         let randomX = random(BALL_SIZE, WIDTH - BALL_SIZE);
         let randomY = random(BALL_SIZE, HEIGHT - BALL_SIZE);
         while (dist(spawnPoint.x, spawnPoint.y, randomX, randomY) - spawnPoint.size < 0) {

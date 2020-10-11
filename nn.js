@@ -1,4 +1,13 @@
+/**
+ * Wrapper class around Tensorflow.js API.
+ */
 class NeuralNetwork {
+    /**
+     * @param {tf.Sequential | number} a 
+     * @param {number} b 
+     * @param {number} c 
+     * @param {number} d 
+     */
     constructor(a, b, c, d) {
         if (a instanceof tf.Sequential) {
             this.model = a;
@@ -13,6 +22,9 @@ class NeuralNetwork {
         }
     }
 
+    /**
+     *  @returns {NeuralNetwork}
+     */
     copy() {
         return tf.tidy(() => {
             const modelCopy = this.createModel();
@@ -31,6 +43,10 @@ class NeuralNetwork {
         });
     }
 
+    /**
+     * @param {NeuralNetwork} other
+     * @returns {NeuralNetwork}
+     */
     crossover(other) {
         return tf.tidy(() => {
             const modelCopy = this.createModel();
@@ -54,6 +70,9 @@ class NeuralNetwork {
         });
     }
 
+    /**
+     * @param {number} rate
+     */
     mutate(rate) {
         tf.tidy(() => {
             const weights = this.model.getWeights();
@@ -79,6 +98,10 @@ class NeuralNetwork {
         this.model.dispose();
     }
 
+    /**
+     * @param {number[]} inputs 
+     * @returns {number[]} 
+     */
     predict(inputs) {
         return tf.tidy(() => {
             const xs = tf.tensor2d([inputs]);

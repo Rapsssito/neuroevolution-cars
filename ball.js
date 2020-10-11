@@ -1,4 +1,9 @@
 class Ball {
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} size
+     */
     constructor(x, y, size) {
         this.x = x;
         this.y = y;

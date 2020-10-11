@@ -1,4 +1,10 @@
 class Food {
+    /**
+     * @param {number} x 
+     * @param {number} y 
+     * @param {number} value 
+     * @param {number} size 
+     */
     constructor(x, y, value = 1, size = 20) {
         this.x = x;
         this.y = y;
