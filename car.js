@@ -169,15 +169,20 @@ class Car {
     }
 
     display(best) {
+        // Display car
         if (best) stroke(255, 0, 0);
         else stroke(0);
         fill(255, 50);
         strokeWeight(5);
         ellipse(this.position.x, this.position.y, this.size, this.size);
+        // Display vision arc
         stroke(0, 100);
         strokeWeight(2);
         noFill();
-        ellipse(this.position.x, this.position.y, this.visionRadius * 2);
+        const angle = atan2(this.velocity.x, this.velocity.y);
+        arc(this.position.x, this.position.y, this.visionRadius * 2, this.visionRadius * 2,
+            -angle, -angle+PI, PIE);
+        // Display velocity direction
         stroke(0, 0, 255);
         line(
             this.position.x,
@@ -185,6 +190,7 @@ class Car {
             this.position.x + this.velocity.x * 10,
             this.position.y + this.velocity.y * 10
         );
+        // Display obstacle detections
         stroke(255, 0, 0, 100);
         for (const normalLine of this.visionLines) {
             line(

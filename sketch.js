@@ -1,12 +1,12 @@
 const MAX_POPULATION = 20;
-const MAX_FOOD = 30;
+const MAX_FOOD = 50;
 const OBSTACLE_RATIO = 0.12;
 const CAR_SIZE = 30;
 const OBSTACLE_SIZE = 50;
 const FOOD_SIZE = 10;
 const FOOD_VALUE = 10;
-const WIDTH = 600;
-const HEIGHT = 600;
+const WIDTH = 800;
+const HEIGHT = 800;
 
 let generation = 0;
 let spawnPoint;
